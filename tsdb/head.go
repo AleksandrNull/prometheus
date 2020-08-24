@@ -774,10 +774,12 @@ func (h *Head) Truncate(mint int64) (err error) {
 	atomic.StoreInt64(&h.minTime, mint)
 	atomic.StoreInt64(&h.minValidTime, mint)
 
+        level.Info(h.logger).Log("msg", "Min/Max time equalizer start")
 	// Ensure that max time is at least as high as min time.
 	for h.MaxTime() < mint {
 		atomic.CompareAndSwapInt64(&h.maxTime, h.MaxTime(), mint)
 	}
+        level.Info(h.logger).Log("msg", "Min/Max time equalizer end")
 
 	// This was an initial call to Truncate after loading blocks on startup.
 	// We haven't read back the WAL yet, so do not attempt to truncate it.
@@ -788,6 +790,7 @@ func (h *Head) Truncate(mint int64) (err error) {
 	h.metrics.headTruncateTotal.Inc()
 	start := time.Now()
 
+	level.Info(h.logger).Log("msg", "Running h.gc() function")
 	h.gc()
 	level.Info(h.logger).Log("msg", "Head GC completed", "duration", time.Since(start))
 	h.metrics.gcDuration.Observe(time.Since(start).Seconds())

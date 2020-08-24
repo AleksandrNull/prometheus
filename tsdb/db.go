@@ -658,6 +658,7 @@ func (db *DB) Dir() string {
 }
 
 func (db *DB) run() {
+        level.Info(db.logger).Log("msg", "db.run() start")
 	defer close(db.donec)
 
 	backoff := time.Duration(0)
@@ -730,6 +731,7 @@ func (a dbAppender) Commit() error {
 // Old blocks are only deleted on reload based on the new block's parent information.
 // See DB.reload documentation for further information.
 func (db *DB) Compact() (err error) {
+        level.Info(db.logger).Log("msg", "db.Compact() start")
 	db.cmtx.Lock()
 	defer db.cmtx.Unlock()
 	defer func() {
@@ -780,6 +782,7 @@ func (db *DB) CompactHead(head *RangeHead) (err error) {
 func (db *DB) compactHead(head *RangeHead) (err error) {
 	// Add +1 millisecond to block maxt because block intervals are half-open: [b.MinTime, b.MaxTime).
 	// Because of this block intervals are always +1 than the total samples it includes.
+        level.Info(db.logger).Log("msg", "db.compactHead() start")
 	maxt := head.MaxTime() + 1
 	uid, err := db.compactor.Write(db.dir, head, head.MinTime(), maxt, nil)
 	if err != nil {

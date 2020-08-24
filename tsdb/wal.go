@@ -731,6 +731,7 @@ func (w *SegmentWAL) Close() error {
 }
 
 func (w *SegmentWAL) write(t WALEntryType, flag uint8, buf []byte) error {
+        level.Info(db.logger).Log("msg", ".write() start")
 	// Cut to the next segment if the entry exceeds the file size unless it would also
 	// exceed the size of a new segment.
 	// TODO(gouthamve): Add a test for this case where the commit is greater than segmentSize.

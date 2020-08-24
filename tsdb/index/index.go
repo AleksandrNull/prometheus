@@ -269,6 +269,7 @@ func (fw *FileWriter) Pos() uint64 {
 }
 
 func (fw *FileWriter) Write(bufs ...[]byte) error {
+	level.Info(db.logger).Log("msg", ".Write() start")
 	for _, b := range bufs {
 		n, err := fw.fbuf.Write(b)
 		fw.pos += uint64(n)
